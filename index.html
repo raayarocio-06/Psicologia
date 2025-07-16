@@ -11,20 +11,17 @@
       padding: 20px;
       color: #333;
     }
-
     h1 {
       text-align: center;
       color: #7C161D;
       font-family: 'Playfair Display', serif;
       margin-bottom: 30px;
     }
-
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
       gap: 20px;
     }
-
     .year {
       background-color: #ffffff;
       border: 2px solid #f0e6e6;
@@ -32,21 +29,18 @@
       padding: 15px;
       box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
     }
-
     .year h2 {
       font-size: 1.3em;
       color: #A42127;
       font-family: 'Playfair Display', serif;
       margin-bottom: 10px;
     }
-
     .cuatrimestre h3 {
       font-size: 1.1em;
       color: #CA5F74;
       font-family: 'Playfair Display', serif;
       margin-bottom: 8px;
     }
-
     .materia {
       background-color: #d6d6d6;
       margin: 5px 0;
@@ -55,28 +49,21 @@
       cursor: pointer;
       font-size: 0.95em;
       user-select: none;
-      outline: none !important;
-      border: none;
-      position: relative;
       color: #333;
     }
-
     .materia.cursada {
       background-color: #A4FCD5 !important;
       color: #000;
     }
-
     .materia.aprobada {
       background-color: #F3AEB3 !important;
       color: #000;
     }
-
     .materia.bloqueada {
-      background-color: #ececec;
+      background-color: #ececec !important;
       cursor: not-allowed;
       color: #999;
     }
-
     .materia:hover::after {
       content: attr(title);
       position: absolute;
@@ -90,12 +77,14 @@
       white-space: nowrap;
       z-index: 10;
     }
+    .materia:focus {
+      outline: none;
+    }
   </style>
 </head>
 <body>
   <h1>Malla Curricular Psicología – UNMDP</h1>
   <div class="grid" id="malla"></div>
-
   <script>
         const materias = {
       "1º año": {
@@ -175,21 +164,26 @@
       }
     };
 
+    // Estado guardado en localStorage, si no existe, comienza vacío
     const estado = JSON.parse(localStorage.getItem("estadoMaterias")) || {};
 
+    // Guarda el estado en localStorage
     function guardarEstado() {
       localStorage.setItem("estadoMaterias", JSON.stringify(estado));
     }
 
+    // Verifica si se cumplen todos los requisitos (materias cursadas o aprobadas)
     function tieneRequisitos(reqs) {
       return reqs.every(r => estado[r] === "aprobada" || estado[r] === "cursada");
     }
 
+    // Crea el elemento HTML de una materia con comportamiento clic y doble clic
     function crearMateria(materia) {
       const div = document.createElement("div");
       div.className = "materia";
       div.textContent = materia.nombre;
       div.dataset.id = materia.id;
+      div.tabIndex = -1;
 
       const estadoActual = estado[materia.id];
       if (estadoActual === "cursada") div.classList.add("cursada");
@@ -212,6 +206,7 @@
           estado[materia.id] = "cursada";
         }
         guardarEstado();
+        construirMalla();
       });
 
       div.addEventListener("dblclick", () => {
@@ -220,11 +215,13 @@
         div.classList.add("aprobada");
         estado[materia.id] = "aprobada";
         guardarEstado();
+        construirMalla();
       });
 
       return div;
     }
 
+    // Construye toda la malla curricular en el DOM
     function construirMalla() {
       const grid = document.getElementById("malla");
       grid.innerHTML = "";
