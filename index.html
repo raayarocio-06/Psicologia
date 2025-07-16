@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Malla Curricular Psicología UNMDP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Quicksand:wght@500&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background-color: #fffdfd;
+      padding: 20px;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: #7C161D;
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 30px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+      gap: 20px;
+    }
+
+    .year {
+      background-color: #ffffff;
+      border: 2px solid #f0e6e6;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .year h2 {
+      font-size: 1.3em;
+      color: #A42127;
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 10px;
+    }
+
+    .cuatrimestre h3 {
+      font-size: 1.1em;
+      color: #CA5F74;
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 8px;
+    }
+
+    .materia {
+      background-color: #d6d6d6;
+      margin: 5px 0;
+      padding: 7px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95em;
+      user-select: none;
+      outline: none !important;
+      border: none;
+      position: relative;
+      color: #333;
+    }
+
+    .materia.cursada {
+      background-color: #A4FCD5 !important;
+      color: #000;
+    }
+
+    .materia.aprobada {
+      background-color: #F3AEB3 !important;
+      color: #000;
+    }
+
+    .materia.bloqueada {
+      background-color: #ececec;
+      cursor: not-allowed;
+      color: #999;
+    }
+
+    .materia:hover::after {
+      content: attr(title);
+      position: absolute;
+      background: #333;
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75em;
+      top: -26px;
+      left: 0;
+      white-space: nowrap;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <h1>Malla Curricular Psicología – UNMDP</h1>
+  <div class="grid" id="malla"></div>
+
+  <script>
+        const materias = {
+      "1º año": {
+        "1º Cuatrimestre": [
+          { id: "intro_psico", nombre: "Introducción a la Psicología" },
+          { id: "filosofia", nombre: "Filosofía del Hombre" },
+          { id: "epistemologia", nombre: "Epistemología General" },
+          { id: "grap1", nombre: "G.R.A.P. I" }
+        ],
+        "2º Cuatrimestre": [
+          { id: "historia", nombre: "Historia Social de la Psicología" },
+          { id: "antropologia", nombre: "Antropología" },
+          { id: "biologia", nombre: "Biología Humana" },
+          { id: "inv_psico", nombre: "Introducción a la Investigación Psicológica" },
+          { id: "pepp1", nombre: "PEPP I" }
+        ]
+      },
+      "2º año": {
+        "1º Cuatrimestre": [
+          { id: "sist1", nombre: "Sistemas Psicológicos contemporáneos I", req: ["intro_psico", "filosofia", "epistemologia", "historia"] },
+          { id: "sociologia", nombre: "Sociología" },
+          { id: "psicoanalisis", nombre: "Introducción de la Teoría Psicoanalítica", req: ["intro_psico", "historia"] },
+          { id: "nucleos1", nombre: "Núcleos Problemáticos", req: ["epistemologia", "inv_psico"] },
+          { id: "desarrollo", nombre: "Psicología del Desarrollo", req: ["intro_psico", "biologia"] },
+          { id: "grap2", nombre: "G.R.A.P. II", req: ["intro_psico", "grap1"] }
+        ],
+        "2º Cuatrimestre": [
+          { id: "sist2", nombre: "Sistemas Psicológicos contemporáneos II", req: ["sist1"] },
+          { id: "problemas", nombre: "Problemas sociales Latinoamericanos", req: ["antropologia", "sociologia"] },
+          { id: "neuro", nombre: "Neuropsicología", req: ["intro_psico", "biologia"] },
+          { id: "pepp2", nombre: "PEPP II", req: ["pepp1"] }
+        ]
+      },
+      "3º año": {
+        "1º Cuatrimestre": [
+          { id: "aprendizaje", nombre: "Teorías del aprendizaje", req: ["intro_psico", "desarrollo"] },
+          { id: "estrategias", nombre: "Estrategias Cualitativas y Cuantitativas en Investigación Psicológica", req: ["intro_psico", "epistemologia", "inv_psico"] },
+          { id: "psicologia_social", nombre: "Psicología Social", req: ["intro_psico", "antropologia", "sociologia"] },
+          { id: "cognitiva", nombre: "Psicología Cognitiva", req: ["intro_psico", "neuro"] },
+          { id: "grap3", nombre: "G.R.A.P. III", req: ["psicoanalisis", "grap2"] }
+        ],
+        "2º Cuatrimestre": [
+          { id: "psicoanalisis2", nombre: "Desarrollos del Psicoanálisis", req: ["psicoanalisis"] },
+          { id: "instrumentos1", nombre: "Instrumentos De Exploración Psicológica I", req: ["aprendizaje", "sist1", "estrategias", "cognitiva"] },
+          { id: "grupos", nombre: "Psicología de los Grupos", req: ["psicologia_social", "psicoanalisis"] },
+          { id: "instrumentos2", nombre: "Instrumentos De Exploración Psicológica II", req: ["sist1", "psicoanalisis", "estrategias"] },
+          { id: "nucleos2", nombre: "Núcleos Problemáticos 2", req: ["nucleos1", "estrategias"] },
+          { id: "pepp3", nombre: "PEPP III", req: ["pepp2"] }
+        ]
+      },
+      "4º año": {
+        "1º Cuatrimestre": [
+          { id: "psicopatologia", nombre: "Psicopatología", req: ["sist2", "neuro", "cognitiva", "psicoanalisis2"] },
+          { id: "institucional", nombre: "Psicología Institucional y Comunitaria", req: ["sist2", "problemas", "grupos"] },
+          { id: "episte_psico", nombre: "Epistemología de la Psicología", req: ["sist2", "estrategias"] },
+          { id: "psicodiagnostico", nombre: "Psicodiagnóstico", req: ["instrumentos1", "instrumentos2"] },
+          { id: "grap4", nombre: "G.R.A.P. IV", req: ["grap3", "problemas"] },
+          { id: "pepp4", nombre: "PEPP IV", req: ["pepp3"] }
+        ],
+        "2º Cuatrimestre": [
+          { id: "clinica", nombre: "Psicología Clínica", req: ["psicopatologia", "institucional", "psicodiagnostico", "pepp4"] },
+          { id: "juridica", nombre: "Psicología Jurídica", req: ["psicopatologia", "institucional", "psicodiagnostico", "pepp4"] },
+          { id: "educacional", nombre: "Psicología Educacional", req: ["psicopatologia", "institucional", "psicodiagnostico", "pepp4"] },
+          { id: "laboral", nombre: "Psicología Laboral", req: ["psicopatologia", "institucional", "psicodiagnostico", "pepp4"] }
+        ]
+      },
+      "5º año": {
+        "1º Cuatrimestre": [
+          { id: "deontologia", nombre: "Deontología", req: ["sist2"] }
+        ],
+        "2º Cuatrimestre": [
+          { id: "seminarios", nombre: "Seminarios de Orientación", req: ["clinica", "juridica", "educacional", "laboral"] },
+          { id: "residencia", nombre: "Residencia", req: ["clinica", "juridica", "educacional", "laboral"] },
+          { id: "trabajo", nombre: "Trabajo de investigación", req: ["clinica", "juridica", "educacional", "laboral"] },
+          { id: "traduccion", nombre: "Traducción de Textos Psicológicos" }
+        ]
+      }
+    };
+
+    const estado = JSON.parse(localStorage.getItem("estadoMaterias")) || {};
+
+    function guardarEstado() {
+      localStorage.setItem("estadoMaterias", JSON.stringify(estado));
+    }
+
+    function tieneRequisitos(reqs) {
+      return reqs.every(r => estado[r] === "aprobada" || estado[r] === "cursada");
+    }
+
+    function crearMateria(materia) {
+      const div = document.createElement("div");
+      div.className = "materia";
+      div.textContent = materia.nombre;
+      div.dataset.id = materia.id;
+
+      const estadoActual = estado[materia.id];
+      if (estadoActual === "cursada") div.classList.add("cursada");
+      if (estadoActual === "aprobada") div.classList.add("aprobada");
+
+      const bloqueada = materia.req && !tieneRequisitos(materia.req);
+      if (bloqueada) {
+        div.classList.add("bloqueada");
+        div.title = "Faltan requisitos";
+      }
+
+      div.addEventListener("click", () => {
+        if (div.classList.contains("bloqueada")) return;
+        if (div.classList.contains("cursada")) {
+          div.classList.remove("cursada");
+          delete estado[materia.id];
+        } else {
+          div.classList.remove("aprobada");
+          div.classList.add("cursada");
+          estado[materia.id] = "cursada";
+        }
+        guardarEstado();
+      });
+
+      div.addEventListener("dblclick", () => {
+        if (div.classList.contains("bloqueada")) return;
+        div.classList.remove("cursada");
+        div.classList.add("aprobada");
+        estado[materia.id] = "aprobada";
+        guardarEstado();
+      });
+
+      return div;
+    }
+
+    function construirMalla() {
+      const grid = document.getElementById("malla");
+      grid.innerHTML = "";
+
+      for (const [anio, cuatrimestres] of Object.entries(materias)) {
+        const yearDiv = document.createElement("div");
+        yearDiv.className = "year";
+
+        const h2 = document.createElement("h2");
+        h2.textContent = anio;
+        yearDiv.appendChild(h2);
+
+        for (const [cuatri, listaMaterias] of Object.entries(cuatrimestres)) {
+          const cuatriDiv = document.createElement("div");
+          cuatriDiv.className = "cuatrimestre";
+
+          const h3 = document.createElement("h3");
+          h3.textContent = cuatri;
+          cuatriDiv.appendChild(h3);
+
+          listaMaterias.forEach(m => cuatriDiv.appendChild(crearMateria(m)));
+          yearDiv.appendChild(cuatriDiv);
+        }
+
+        grid.appendChild(yearDiv);
+      }
+    }
+
+    construirMalla();
+  </script>
+</body>
+</html>
